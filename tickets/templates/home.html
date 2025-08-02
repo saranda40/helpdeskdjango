@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row flex-grow-1">
+        <div class="col-md-6 bg-white p-5 d-flex flex-column justify-content-center align-items-center">
+            <img src="logo_placeholder.png" alt="Logo de la Empresa" class="img-fluid mb-3"
+                style="max-width: 200px; height: auto;">
+            <h1 class="display-4 fw-bold text-center">Portal de Mesa de Ayuda {{empresa}}  </h1>
+            <p class="lead text-center mb-4">Soluciones rápidas a tu alcance</p>
+            <div class="d-grid gap-2 col-md-6 mx-auto">
+                <a class="btn btn-primary btn-lg" href="{% url 'Login Page' %}">Inicia Sesión</a>
+                <a class="btn btn-outline-primary btn-lg" href="{% url 'Registro Page' %}">Registro</a>
+            </div>
+        </div>
+        <div class="col-md-6 bg-light p-5">
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h4 class="fw-bold mb-3">Últimos Anuncios</h4>
+                <ul class="list-group list-group-flush">
+                    {% for anuncio in anuncios%}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-bold">{{anuncio.titulo}}</div>
+                                <small class="text-muted">{{anuncio.contenido}}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Info</span>
+                        </li>       
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

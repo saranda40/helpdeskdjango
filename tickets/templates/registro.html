@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="conteiner mt-5">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <form action="/registro/" method="post" class="card card-body">
+                {% csrf_token %}
+                {∫% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+                {% include "componentes/subtitulo.html" with titulo=message clase="text-primary" %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de usuario</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password1" class="form-label">Contraseña</label>
+                    <input type="password" name="password1" id="password1" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password2" class="form-label">Confirmar contraseña</label>
+                    <input type="password" name="password2" id="password2" class="form-control" required>
+                </div>
+                <button class="btn btn-primary">
+                    Registrarse       
+                </button>
+            </form>
+        </div>
+    </div>
+
+</main>
+{% endblock %}
