@@ -1,24 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="conteiner mt-5">
+<main class="conteiner mt-3">
     <div class="row">
-        <div class="col-md-4 offset-md-4">
+        <div class="col-md-5 offset-md-4">
             <form action="/usuario/registro/" method="post" class="card card-body">
                 {% csrf_token %}
                 {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
                 {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
                 {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
-                {{ form.username }}
-                {{ form.email.label_tag }}
-                {{ form.email }}
-                {{ form.password1.label_tag }}
-                {{ form.password1 }}
-                {{ form.password2.label_tag }}
-                {{ form.password2 }}
-                {% include "componentes/boton.html" with texto="Registrarse" clase="btn btn-primary" %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <div id="{{ field.id_for_label }}_help" class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="alert alert-danger mt-1">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% include "componentes/boton.html" with texto="Registrarse" clase="btn btn-success" %}
             </form>
             <div class="text-center">
-                <a href="{% url 'Login Page' %}" class="text-bg-primary">
+                <a href="{% url 'Login Page' %}">
                     ¿Tienes Credenciales? Accede acá
                 </a>
             </div>
