@@ -2,10 +2,11 @@
 {% block content %}
     <div class="row flex-grow-1">
         <div class="col-md-6 bg-white p-5 d-flex flex-column justify-content-center align-items-center">
-            <img src="logo_placeholder.png" alt="Logo de la Empresa" class="img-fluid mb-3"
-                style="max-width: 200px; height: auto;">
-            <h1 class="display-4 fw-bold text-center">Portal de Mesa de Ayuda {{empresa}}  </h1>
+            
+            <h1 class="display-3 fw-bold text-center">Portal de Mesa de Ayuda</h1>
             <p class="lead text-center mb-4">Soluciones rápidas a tu alcance</p>
+            <img src="{{ logo_empresa.url }}" alt="{{ nombre_empresa }}" class="img-fluid mb-3"
+                style="max-width: 200px; height: auto;">
             <div class="d-grid gap-2 col-md-6 mx-auto">
                 <a class="btn btn-primary btn-lg" href="{% url 'Login Page' %}">Inicia Sesión</a>
                 <a class="btn btn-outline-primary btn-lg" href="{% url 'Registro Page' %}">Registro</a>

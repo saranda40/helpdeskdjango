@@ -17,12 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tickets import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='Home Page'),
-    path('login/', views.login, name='Login Page'),
-    path('registro/', views.registro, name='Registro Page'),
-    path('dashboard/', views.home, name='Dashboard Page'),
+    path('usuario/login/', views.login, name='Login Page'),
+    path('usuario/registro/', views.registro, name='Registro Page'),
+    path('usuario/logout/', views.logout, name='Logout Page'),
+    path('dashboard/', views.dashboard, name='Dashboard Page'),
     # Add other URL patterns as needed
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

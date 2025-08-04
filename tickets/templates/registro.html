@@ -3,27 +3,25 @@
 <main class="conteiner mt-5">
     <div class="row">
         <div class="col-md-4 offset-md-4">
-            <form action="/registro/" method="post" class="card card-body">
+            <form action="/usuario/registro/" method="post" class="card card-body">
                 {% csrf_token %}
-                {∫% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
-                {% include "componentes/subtitulo.html" with titulo=message clase="text-primary" %}
+                {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+                {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
                 {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
-                <div class="mb-3">
-                    <label for="username" class="form-label">Nombre de usuario</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password1" class="form-label">Contraseña</label>
-                    <input type="password" name="password1" id="password1" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password2" class="form-label">Confirmar contraseña</label>
-                    <input type="password" name="password2" id="password2" class="form-control" required>
-                </div>
-                <button class="btn btn-primary">
-                    Registrarse       
-                </button>
+                {{ form.username }}
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% include "componentes/boton.html" with texto="Registrarse" clase="btn btn-primary" %}
             </form>
+            <div class="text-center">
+                <a href="{% url 'Login Page' %}" class="text-bg-primary">
+                    ¿Tienes Credenciales? Accede acá
+                </a>
+            </div>
         </div>
     </div>
 
