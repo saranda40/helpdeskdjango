@@ -6,9 +6,9 @@ from django.conf import settings
 class Ticket(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     titulo = models.CharField(max_length=200)
-    decripcion = models.TextField()
+    descripcion = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_cierre = models.DateTimeField(auto_now=True)
+    fecha_cierre = models.DateTimeField(null=True, blank=True)
     id_nivel = models.ForeignKey('nivel', on_delete=models.CASCADE, null=True, blank=True)
     id_area = models.ForeignKey('areas', on_delete=models.CASCADE, null=True, blank=True)
     id_cargo = models.ForeignKey('cargos', on_delete=models.CASCADE, null=True, blank=True)

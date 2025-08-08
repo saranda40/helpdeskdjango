@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="conteiner mt-3">
+    <div class="row">
+        <div class="col-md-5 offset-md-4">
+            <form action="" method="post" class="card card-body" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+                {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+
+               {{form.as_p}}
+                {% include "componentes/boton.html" with texto="Actualizar información" clase="btn btn-success" %}
+            </form>
+            <div class="text-center">
+                <a href="{% url 'Login Page' %}">
+                    ¿Tienes Credenciales? Accede acá
+                </a>
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

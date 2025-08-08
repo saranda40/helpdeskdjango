@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<main class="conteiner mt-3">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-3">
+            <form action="/tareas/crear_tarea" method="POST">
+                {% csrf_token %}
+                <h1 class="text-center display-3 py-3">{{message}}</h1>
+                {{error}}
+                {{ form.as_p }}
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary m-auto">Crear Tarea</button>
+                </div>
+                
+            </form>
+            <a class="text-center text-secondary mt-3" href="{% url 'Tareas Page' %}">Volver a Tareas</a>
+        </div>
+    </div>
+</main>
+
+
+
+{% endblock %}

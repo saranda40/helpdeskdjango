@@ -1,10 +1,9 @@
-<div class="col-md-6 col-lg-4 mb-4"></div>
-    <div class="card {{ clase|default:'' }}">
-        <div class="card-body">
-            <h5 class="card-title">{{ titulo }}</h5>
-            <p class="card-text fs-1">{{ contenido }}</p>
+<div class="card card-sales py-3 px-4 {{ clase|default:'' }}">
+    <div class="d-flex align-items-center">
+        <i class="ti ti-chart-bar fs-1 me-3"></i>
+        <div>
+            <small class="text-uppercase">{{ titulo }}</small>
+            <h3 class="mb-0">{{ contenido }}</h3>
         </div>
     </div>
 </div>
-
-<p>{{ titulo }} {{ contenido }}</p>

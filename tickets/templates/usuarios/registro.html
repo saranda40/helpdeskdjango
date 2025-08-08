@@ -3,7 +3,7 @@
 <main class="conteiner mt-3">
     <div class="row">
         <div class="col-md-5 offset-md-4">
-            <form action="/usuario/registro/" method="post" class="card card-body">
+            <form action="/usuario/registro/" method="post" class="card card-body" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
                 {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}

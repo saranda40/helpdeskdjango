@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="conteniner mt-3">
+    <form action="" method="POST" class="card card-body">
+        <h1>{{message}}</h1>
+        {{error}}
+        {{form.as_p}}
+        <button class="btn btn-primary">
+            Actualizar Tarea
+        </button>
+    </form>
+</main>
+{% endblock %}

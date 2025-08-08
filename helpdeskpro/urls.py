@@ -26,6 +26,13 @@ urlpatterns = [
     path('usuario/login/', views.ingreso, name='Login Page'),
     path('usuario/registro/', views.registro, name='Registro Page'),
     path('usuario/logout/', views.signout, name='Logout Page'),
+    path('usuario/<int:id_usuario>/', views.profile, name='Profile Page'),
     path('dashboard/', views.dashboard, name='Dashboard Page'),
+    path('tareas_completadas/', views.tareas_completadas, name='Tasks Completed Page'),
+    path('tareas/tareas', views.tareas, name='Tareas Page'),
+    path('tareas/crear', views.crear_tarea, name='Crear Tarea'),
+    path('tareas/<int:id>/', views.detalle_tarea, name='Detalle Tarea Page'),
+    path('tareas/<int:id>/complete/', views.completar_tarea, name='Tarea Completa Page'),
+    path('tareas/<int:id>/delete/', views.eliminar_tarea, name='Tarea Eliminada Page'),
     # Add other URL patterns as needed
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
