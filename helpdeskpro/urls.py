@@ -16,23 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tickets import views
+from tickets.views import views_asignaciones, views_mensajes, views_sitio, views_tareas, views_usuarios
 from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='Home Page'),
-    path('usuario/login/', views.ingreso, name='Login Page'),
-    path('usuario/registro/', views.registro, name='Registro Page'),
-    path('usuario/logout/', views.signout, name='Logout Page'),
-    path('usuario/<int:id_usuario>/', views.profile, name='Profile Page'),
-    path('dashboard/', views.dashboard, name='Dashboard Page'),
-    path('tareas_completadas/', views.tareas_completadas, name='Tasks Completed Page'),
-    path('tareas/tareas', views.tareas, name='Tareas Page'),
-    path('tareas/crear', views.crear_tarea, name='Crear Tarea'),
-    path('tareas/<int:id>/', views.detalle_tarea, name='Detalle Tarea Page'),
-    path('tareas/<int:id>/complete/', views.completar_tarea, name='Tarea Completa Page'),
-    path('tareas/<int:id>/delete/', views.eliminar_tarea, name='Tarea Eliminada Page'),
+    path('', views_sitio.home, name='Home Page'),
+    path('usuario/login/', views_usuarios.ingreso, name='Login Page'),
+    path('usuario/registro/', views_usuarios.registro, name='Registro Page'),
+    path('usuario/logout/', views_usuarios.signout, name='Logout Page'),
+    path('usuario/<int:id_usuario>/', views_usuarios.profile, name='Profile Page'),
+    path('dashboard/', views_sitio.dashboard, name='Dashboard Page'),
+    path('tareas_completadas/', views_tareas.tareas_completadas, name='Tasks Completed Page'),
+    path('tareas/tareas', views_tareas.tareas, name='Tareas Page'),
+    path('tareas/asignar', views_tareas.asignar_tarea, name='Asignar Tareas Page'),
+    path('tareas/crear_tarea', views_tareas.crear_tarea, name='Crear Tarea Page'),
+    path('tareas/<int:id>/', views_tareas.detalle_tarea, name='Detalle Tarea Page'),
+    path('tareas/<int:id>/complete/', views_tareas.completar_tarea, name='Tarea Completa Page'),
+    path('tareas/<int:id>/delete/', views_tareas.eliminar_tarea, name='Tarea Eliminada Page'),
+    path('tareas/asignaciones',views_asignaciones.asignaciones, name='Asignaciones Page'),
+    path('tareas/asignaciones/<int:id>',views_asignaciones.asignaciones_detalle, name='Detalle Asignacion Page'),
+    path('get_cargos_por_area', views_sitio.get_cargos_por_area, name='get_cargos_por_area'),
     # Add other URL patterns as needed
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

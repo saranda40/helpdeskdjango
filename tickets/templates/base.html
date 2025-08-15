@@ -11,20 +11,41 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
-       
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .sidebar {
+        background-color: #fff;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        padding-top: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,.1);
+      }
+      .content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+      .card-icon {
+        font-size: 2rem;
+      }
+      .card-body h5 {
+        font-size: 1rem;
+        color: #6c757d;
+      }
+    </style>   
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header class="bg-primary text-white p-3 shadow-sm">
-        {% include '_navbar.html' %}
-    </header>
-    <main class="container-fluid py-4 flex-grow-1">
-        {% block content %}
-        {% endblock %}
-    </main>
-        
-   <footer class="bg-dark text-white text-center py-3 mt-auto">
-        Portal Mesa de Ayuda © {% now "Y" %}
-    </footer>
+    <div class="d-flex">
+        {% include "_navbar.html" %}
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

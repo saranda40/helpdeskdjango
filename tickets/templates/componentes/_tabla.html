@@ -1,0 +1,29 @@
+<table class="table table-success table-striped-columns">
+  <thead>
+    <tr>
+      {% for header in headers %}
+        <th>{{ header }}</th>
+      {% endfor %}
+       {% if valor == 'asignar' %}
+        <th></th>
+        {% endif%}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+      <tr>
+        {% for value in row.values %}
+         {% if value == 'Urgente'%}
+          <td class="text-danger">{{ value }}</td>
+         {%else%}
+            <td>{{ value }}</td>
+         {%endif%}
+        {% endfor %}
+        {% if valor == 'asignar' %}
+            <td><i class="ti ti-device-ipad-horizontal-search"></i></td>
+            
+        {% endif%}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

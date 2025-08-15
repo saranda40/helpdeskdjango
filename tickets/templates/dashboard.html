@@ -1,69 +1,84 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
-
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="position-sticky pt-1">
-
-                <div class="text-center p-2">
-                    {% if user.image_perfil %}
-                    <img src="{{ user.image_perfil.url }}" class="img-fluid rounded-circle mb-2"
-                        alt="{{user.username}}">
-                    {% endif %}
-                    <div class="d-flex align-items-center py-2 w-25">
-                        <p class="mb-0 me-2">{{ user.username }}</p>
-                        <a class="nav-link" title="Editar Información Usuario" href="{% url 'Profile Page' user.id %}">
-                            <i class="ti ti-edit"></i>
-                        </a>
-                    </div>´`
+    <h2 class="mb-4">Dashboard {{ nombre_empresa }}</h2>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Visitors</h5>
+                            <p class="card-text fs-4 fw-bold">1,294</p>
+                        </div>
+                        <i class="bi bi-people-fill card-icon"></i>
+                    </div>
                 </div>
-
-                <hr class="mx-3">
-
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
-                            Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Crear Tarea
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Listar Tareas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-
-                    </li>
-                </ul>
             </div>
-        </nav>
-
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            {% include "componentes/titulo.html" with titulo="Resumen de Tareas" clase="mt-3" %}
-            <div class="row mt-4">
-                
-                <div class="col-md-6 col-lg-4 mb-4">
-                    {% include "componentes/card.html" with titulo="Tareas Completadas" contenido="10" clase="text-white bg-success" %}
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Sales</h5>
+                            <p class="card-text fs-4 fw-bold">$ 1,345</p>
+                        </div>
+                        <i class="bi bi-bar-chart-fill card-icon"></i>
+                        
+                    </div>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    {% include "componentes/card.html" with titulo="Tareas imcompletas" contenido="4" clase="text-white bg-warning"%}
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    {% include "componentes/card.html" with titulo="Tareas Pendientes" contenido="2" clase="text-white bg-danger"%}
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    {% include "componentes/card.html" with titulo="Tareas Pendientes" contenido="2" clase="text-white bg-danger"%}
-                </div>
-
             </div>
-
-    </main>
-</div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Subscribers</h5>
+                            <p class="card-text fs-4 fw-bold">1303</p>
+                        </div>
+                        <i class="bi bi-newspaper card-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Order</h5>
+                            <p class="card-text fs-4 fw-bold">576</p>
+                        </div>
+                        <i class="bi bi-check-circle-fill card-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Task</h5>
+                    <p class="text-muted">Complete</p>
+                    <div class="d-flex justify-content-center my-4">
+                        <div class="position-relative d-inline-block" style="width: 150px; height: 150px;">
+                                                   </div>
+                    </div>
+                    <p class="text-center text-muted">Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">World Map</h5>
+                    <p class="text-muted">Map of the distribution of users around the world</p>
+                                    </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,24 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="conteiner mt-3">
+<main class="conteiner mt-5">
     <div class="row">
-        <div class="col-md-5 offset-md-4">
+        <div class="col-md-10 offset-md-6">
             <form action="" method="post" class="card card-body" enctype="multipart/form-data">
                 {% csrf_token %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
                 {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
                 {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
-                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
-
                {{form.as_p}}
                 {% include "componentes/boton.html" with texto="Actualizar información" clase="btn btn-success" %}
             </form>
-            <div class="text-center">
-                <a href="{% url 'Login Page' %}">
-                    ¿Tienes Credenciales? Accede acá
-                </a>
-            </div>
         </div>
     </div>
-
 </main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Escucha cuando cambia la selección en el campo 'Área'
+    $("#id_id_area").change(function() {
+        var id_area = $(this).val();
+        // Si se selecciona un área válida
+        if (id_area) {
+            // Realiza la llamada AJAX a la URL que creaste
+            $.ajax({
+                url: "{% url 'get_cargos_por_area' %}",
+                data: {
+                    'id_area': id_area
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    var cargos_select = $("#id_id_cargo");
+                    cargos_select.empty(); // Limpia las opciones existentes
+                    cargos_select.append('<option value="">Selecciona tu cargo</option>');
+
+                    // Itera sobre los datos recibidos y añade una nueva opción para cada usuario
+                    $.each(data, function(key, value) {
+                        console.log(value.cargo)
+                        cargos_select.append('<option value="' + value.id + '">' + value.cargo + '</option>');
+                    });
+                },
+                error: function() {
+                    console.error("Error al cargar los cargos.");
+                }
+            });
+        } else {
+            // Si no se selecciona un área, limpia el select de usuarios
+            $("#id_cargo").empty();
+            $("#id_cargo").append('<option value="">Seleccione Cargo</option>');
+        }
+    });
+});
+</script>
 {% endblock %}

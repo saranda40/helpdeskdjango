@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Usuario
+from tickets.models import cargos,areas
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Usuario', max_length=20, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su usuario'}))
@@ -12,6 +13,19 @@ class LoginForm(AuthenticationForm):
     }   
 
 class RegistroForm(UserCreationForm):
+    id_area = forms.ModelChoiceField(
+    queryset=areas.objects.filter(is_activo=True),
+    widget=forms.Select(attrs={'class':'form-control'}),
+    label='Área',
+    empty_label='Seleccione Área'
+    )
+    id_cargo = forms.ModelChoiceField(
+    queryset=cargos.objects.none(),
+    widget=forms.Select(attrs={'class':'form-control'}),
+    label='Cargo',
+    empty_label='Seleccione Cargo',
+    required=False
+    )
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su contraseña'}))
     password2 = forms.CharField(label='Confirme Contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repita su contraseña'}))
 
@@ -19,11 +33,12 @@ class RegistroForm(UserCreationForm):
         # El modelo que se usará para el formulario
         model = Usuario
         # Los campos que se mostrarán en el formulario
-        fields = ('username', 'first_name', 'last_name', 'email', 'image_perfil', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name','apodo', 'email', 'image_perfil','id_area','id_cargo', 'password1', 'password2')
 
         # Personalización de widgets, labels y help_texts para los campos
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su usuario'}),
+            'apodo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su Apodo'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese sus Apellidos'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': ''}),
@@ -32,16 +47,20 @@ class RegistroForm(UserCreationForm):
         
         labels = {
             'username': 'Usuario',
+            'apodo':'Apodo',
             'first_name': 'Nombre',
             'last_name': 'Apellidos',
             'email': 'Correo Electrónico',
             'image_perfil': 'Imagen Perfil',
+            'id_area': 'Àrea',
+            'id_cargo': 'Cargo',
             'password1': 'Contraseña',
             'password2': 'Confirme Contraseña',
         }
         
         help_texts = {
             'username': 'Requerido. 30 caracteres o menos. Letras, números y @/./+/-/_ solamente.',
+            'apodo': 'Requerido, 20 carácteres sólo letras y números',
             'password2':'Repita la contraseña'
         }
 
@@ -65,8 +84,20 @@ class RegistroForm(UserCreationForm):
         if Usuario.objects.filter(username=username).exists():
             raise forms.ValidationError("Este nombre de usuario ya está en uso.")
         return username
+    
+    def clean_apodo(self):
+        apodo = self.cleaned_data.get('apodo')
+        if len(apodo) > 20:
+            raise forms.ValidationError("El nombre de usuario no puede tener más de 20 caracteres.")
+                
+            # Validar que solo sean letras y minúsculas
+        if not apodo.islower() or not apodo.isalpha():
+            raise forms.ValidationError("El Apodo contener solo letras minúsculas.")
         
-
+        if Usuario.objects.filter(username=apodo).exists():
+            raise forms.ValidationError("Este Apodo  ya está en uso.")
+        return apodo
+        
     def clean_email(self):
             email = self.cleaned_data.get('email')
             if Usuario.objects.filter(email=email).exists():
@@ -81,19 +112,74 @@ class RegistroForm(UserCreationForm):
         return user
 
 class EditFormUser(forms.ModelForm):
+    id_area = forms.ModelChoiceField(
+    # Filtramos por las áreas que están activas y tienen cargos asociados
+    queryset=areas.objects.filter(is_activo=True, cargos__isnull=False).distinct(),
+    widget=forms.Select(attrs={'class':'form-control'}),
+    label='Áreas',
+    empty_label='Seleccione Área'
+)
+    id_cargo = forms.ModelChoiceField(
+        queryset=cargos.objects.filter(is_activo=True),
+        widget=forms.Select(attrs={'class':'form-control'}),
+        label='Cargo',
+        empty_label='Seleccione Cargo'
+    )
     class Meta:
         model = Usuario
-        fields = ('first_name','last_name','email','image_perfil')
+        fields = ('apodo','first_name','last_name','email','image_perfil','id_area', 'id_cargo')
         widgets = {
-                'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'}),
-                'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese sus Apellidos'}),
-                'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': ''}),
+                'apodo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su Apodo','required':True}),
+                'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre','required':True}),
+                'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese sus Apellidos','required':True}),
+                'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su Correo','required':True}),
                 'image_perfil': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             }
             
         labels = {
+                'apodo':'Apodo',
                 'first_name': 'Nombre',
                 'last_name': 'Apellidos',
                 'email': 'Correo Electrónico',
                 'image_perfil': 'Imagen Perfil',
+                'id_area': 'Área',
+                'id_cargo': 'Cargo',
+
             }
+        
+        def __init__(self, *args, **kwargs):
+            super(EditFormUser, self).__init__(*args, **kwargs)
+
+            if self.instance and self.instance.id_cargo:
+                self.fields['id_cargo'].queryset = cargos.objects.filter(
+                    id_area__id=self.instance.id_area,
+                    is_activo=True
+                )
+
+    
+        def clean_apodo(self):
+            apodo = self.cleaned_data.get('apodo')
+            if len(apodo) > 20:
+                raise forms.ValidationError("El nombre de usuario no puede tener más de 20 caracteres.")
+                    
+                # Validar que solo sean letras y minúsculas
+            if not apodo.islower() or not apodo.isalpha():
+                raise forms.ValidationError("El Apodo contener solo letras minúsculas.")
+            
+            if Usuario.objects.filter(username=apodo).exists():
+                raise forms.ValidationError("Este Apodo  ya está en uso.")
+            return apodo
+            
+        def clean_email(self):
+                email = self.cleaned_data.get('email')
+                if Usuario.objects.filter(email=email).exists():
+                    raise forms.ValidationError("Este correo electrónico ya está en uso.")
+                return email
+
+        def save(self, commit=True):
+            user = super().save(commit=False)
+            user.is_active = True
+            if commit:
+                user.save()
+            return user
+

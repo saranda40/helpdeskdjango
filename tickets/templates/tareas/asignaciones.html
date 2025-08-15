@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 offset-md-12 mt-3">
+              {% if error %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+              {% endif %}
+              {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+              {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
+              {% include 'componentes/_tabla.html' with headers=headers data=asignaciones %}
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conteiner">
+    {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+    {% include "componentes/error.html" with error=error clase="text-bg-danger" %}
+    <a href="{% url 'Dashboard Page' %}">Dashboard</a>
+</div>
+{% endblock %}

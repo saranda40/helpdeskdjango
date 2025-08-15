@@ -1,13 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="conteniner mt-3">
-    <form action="" method="POST" class="card card-body">
-        <h1>{{message}}</h1>
-        {{error}}
-        {{form.as_p}}
-        <button class="btn btn-primary">
-            Actualizar Tarea
-        </button>
-    </form>
+<main class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 offset-md-8 mt-3">
+                {% if error %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+                {% endif %}
+                {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+                {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
+            <ul class="list-group">
+                
+                {% for task in tasks %}
+                <a class="list-group-item" href="{% url 'Detalle Tarea Page' task.id %}">
+                <header class="d-flex justify-content-between">
+                    {% if task.important %}
+                    <h1 class="fw-bold text-success">{{ task.title }}</h1>
+                     {% else %}
+                     <h1 class="fw-bold">{{ task.title }}</h1>
+                     {% endif %}
+                    
+                    
+                    <p>{{ task.user.username }}</p>
+                    
+                </header>
+                <p>{{ task.description }}</p>
+                <p class="text-secondary">{{ task.datecompleted|date:"d M Y" }}</p>
+                </a>
+                {% empty %}
+                <p class="text-center text-warning">No hay tareas creadas.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </main>
 {% endblock %}
