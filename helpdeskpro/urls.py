@@ -33,6 +33,7 @@ urlpatterns = [
     path('tareas/asignar', views_tareas.asignar_tarea, name='Asignar Tareas Page'),
     path('tareas/crear_tarea', views_tareas.crear_tarea, name='Crear Tarea Page'),
     path('tareas/<int:id>/', views_tareas.detalle_tarea, name='Detalle Tarea Page'),
+    path('tareas/<int:id>/revision/', views_tareas.revision_tarea, name='Revisión Ticket Page'),
     path('tareas/<int:id>/complete/', views_tareas.completar_tarea, name='Tarea Completa Page'),
     path('tareas/<int:id>/delete/', views_tareas.eliminar_tarea, name='Tarea Eliminada Page'),
     path('tareas/asignaciones',views_asignaciones.asignaciones, name='Asignaciones Page'),

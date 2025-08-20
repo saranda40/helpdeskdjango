@@ -4,7 +4,7 @@
       {% for header in headers %}
         <th>{{ header }}</th>
       {% endfor %}
-       {% if valor == 'asignar' %}
+       {% if valor == 'asignar' or valor == 'revisar' %}
         <th></th>
         {% endif%}
     </tr>
@@ -20,7 +20,21 @@
          {%endif%}
         {% endfor %}
         {% if valor == 'asignar' %}
-            <td><i class="ti ti-device-ipad-horizontal-search"></i></td>
+            <td>
+            <a href="{% url 'Detalle Asignacion Page' row.id %}" class="btn btn-primary">
+                <i class="ti ti-device-ipad-horizontal"></i>
+            </a>
+            </td>
+              </td>
+            
+        {% endif%}
+         {% if valor == 'revisar' %}
+            <td>
+            <a href="{% url 'Revisión Ticket Page' row.id %}" class="btn btn-primary">
+                <i class="ti ti-file-check"></i>
+            </a>
+            </td>
+              </td>
             
         {% endif%}
       </tr>

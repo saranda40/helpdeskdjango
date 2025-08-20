@@ -20,12 +20,27 @@ def asignar_tarea(request):
 def tareas(request):
     if not request.user.is_authenticated:
         return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para ver tus tareas.', 'form': LoginForm()})
-    tareas = Ticket.objects.filter(user=request.user,fecha_cierre__isnull=False).order_by('-fecha_cierre')
-    if not tareas:
-        return render(request, 'tareas/tareas.html', {'titulo':'Tareas','message': 'No tienes tareas pendientes.', 'tasks': tareas})
+    tareas = Ticket.objects.filter(asignado_a=request.user.id,fecha_cierre__isnull=True).values('id','titulo','descripcion','id_nivel__nombre','id_area__nombre').order_by('-fecha_cierre')
+    headers = ['id','Título','Descripción', 'Nivel', 'Área']
+
+    if tareas:
+        return render(request, 'tareas/tareas.html', {'titulo':'Tickets','message': 'Tickets pendientes.','headers':headers, 'tasks': tareas,'valor':'revisar'})
     else:
         return render(request, 'tareas/tareas.html', {'tasks': tareas,'titulo':'Listado', 'message': 'Tareas Page'})   
 
+@login_required
+def revision_tarea(request, id):
+    if not request.user.is_authenticated:
+        return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para ver los detalles de la tarea.', 'form': LoginForm()})
+    
+    try:
+        ticket = get_object_or_404(Ticket, id=id, asignado_a=request.user)
+        form = Ticket(instance=ticket)
+        return render(request, 'tareas/revision_ticket.html', {'titulo':'Revisión Ticket: '+ str(ticket.id),'ticket':ticket,'form': form})
+    except Ticket.DoesNotExist:
+        return render(request, 'error.html', {'titulo':'Error','error': 'Ticket no encontrado.'})
+
+@login_required
 def tareas_completadas(request):
     if not request.user.is_authenticated:
         return render(request, 'login.html', {'message': 'Por favor, inicia sesión para ver tus tareas.', 'form': LoginForm()})

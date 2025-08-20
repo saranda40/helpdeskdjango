@@ -35,13 +35,14 @@
         <span class="badge bg-secondary rounded-pill float-end">6</span>
       </a>
     </li>
+    {% if user.es_supervisor %}
     <li class="nav-item">
       <a href="{% url 'Asignaciones Page' %}" class="nav-link text-dark">
         Asignaciones
         <span class="badge bg-danger rounded-pill float-end">3</span>
       </a>
     </li>
-    
+    {% endif%}
     {% if user.is_authenticated  and user.es_supervisor %}
     <li>
       <a href="{% url 'Logout Page' %}" class="nav-link text-dark">

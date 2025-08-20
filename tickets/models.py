@@ -40,6 +40,8 @@ class Ticket(models.Model):
     id_nivel = models.ForeignKey(nivel, on_delete=models.CASCADE, null=True, blank=True)
     id_area = models.ForeignKey(areas, on_delete=models.CASCADE, null=True, blank=True)
     asignado_a = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='assigned_tickets', on_delete=models.CASCADE, null=True, blank=True)
+    fecha_asignacion = models.DateTimeField(null=True, blank=True)
+    is_cerrado = models.BooleanField(default=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
