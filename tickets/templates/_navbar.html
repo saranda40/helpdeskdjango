@@ -1,6 +1,8 @@
 <div class="sidebar d-flex flex-column p-3">
   <div class="d-flex align-items-center mb-4">
+    {% if user.image_perfil.url %}
     <img src="{{ user.image_perfil.url }}" class="rounded-circle me-3 w-50 h-50" alt="{{user.username}}">
+    {% endif %}
     <div>
       <h6 class="mb-0">{{user.apodo}}</h6>
       <small class="text-muted">{{user.id_cargo}}</small>
@@ -43,11 +45,20 @@
       </a>
     </li>
     {% endif%}
-    {% if user.is_authenticated  and user.es_supervisor %}
+
+
+
+    {% if user.is_authenticated  and user.is_administrador %}
     <li>
       <a href="{% url 'Logout Page' %}" class="nav-link text-dark">
         Configuración
         <span class="badge bg-success rounded-pill float-end"><i class="ti ti-settings-check"></i></span>
+      </a>
+    </li>
+        <li>
+      <a href="{% url 'Usuarios Page' %}" class="nav-link text-dark">
+        Usuarios
+        <span class="badge bg-primary rounded-pill float-end"><i class="ti ti-users"></i></span>
       </a>
     </li>
     {% endif%}

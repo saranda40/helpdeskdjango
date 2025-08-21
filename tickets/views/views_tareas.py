@@ -7,7 +7,7 @@ from ..models import Ticket
 from ticketsadmin.models import Empresa, Anuncios
 from usuarios.forms import LoginForm, RegistroForm, EditFormUser
 from usuarios.models import Usuario, cargos
-from ..forms import MensajesTicket,  RespuestaMensajeTicket, TicketForm
+from ..forms import MensajesTicket,  RespuestaMensajeTicket, TicketForm, RevisaTicketForm
 from django.utils import timezone
 from icecream import ic
 from django.http import JsonResponse
@@ -34,9 +34,9 @@ def revision_tarea(request, id):
         return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para ver los detalles de la tarea.', 'form': LoginForm()})
     
     try:
-        ticket = get_object_or_404(Ticket, id=id, asignado_a=request.user)
-        form = Ticket(instance=ticket)
-        return render(request, 'tareas/revision_ticket.html', {'titulo':'Revisión Ticket: '+ str(ticket.id),'ticket':ticket,'form': form})
+        ticket = get_object_or_404(Ticket, pk=id, asignado_a=request.user.id)
+        form = RevisaTicketForm(instance=ticket)
+        return render(request, 'tareas/revision_tarea.html', {'titulo':'Revisión Ticket: '+ str(ticket.id),'ticket':ticket,'form': form})
     except Ticket.DoesNotExist:
         return render(request, 'error.html', {'titulo':'Error','error': 'Ticket no encontrado.'})
 
@@ -106,16 +106,17 @@ def detalle_tarea(request, id_tarea):
                                                 'form': LoginForm()}) 
         
 @login_required
-def completar_tarea(request, task_id):
+def completar_tarea(request, id):
+    ic(id)
+    if not request.user.is_authenticated:
+        return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para completar una tarea.', 'form': LoginForm()})
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return render(request, 'login.html', {'message': 'Por favor, inicia sesión para completar una tarea.',
-                                               'form': LoginForm()})
-        task = get_object_or_404(Ticket, pk=task_id, user=request.user)
+        task = get_object_or_404(Ticket, pk=id)
       
-        if task.user != request.user:
-            return HttpResponse('No tienes permiso para completar esta tarea.')
-        task.datecompleted = timezone.now()
+        if task.asignado_a != request.user:
+            return render(request, 'error.html', {'titulo':'Error','error': 'No tienes permiso para completar esta tarea.'})
+        task.fecha_cierre = timezone.now()
+        task.is_cerrado = True
         task.save()
         return redirect('Tareas Page') 
 

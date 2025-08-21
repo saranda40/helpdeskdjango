@@ -20,7 +20,7 @@ def asignaciones(request):
                 return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para ver tus tareas.', 'form': LoginForm()})
       id_area_usuario = request.user.id_area.id
       asignaciones = Ticket.objects.filter(asignado_a__isnull=True, id_area = id_area_usuario).values('id','titulo','descripcion','id_area__nombre','id_nivel__nombre').order_by('-fecha_creacion')
-      headers = ['id','Título','Descripción','Área','Nivel']
+      headers = ['Ticket','Título','Descripción','Área','Nivel']
       if not asignaciones:
              return render(request,'tareas/asignaciones.html',{'titulo':'Asignaciones','message':'No tiene asignaciones de casos por revisar','headers':headers,
                                                                'asignaciones':asignaciones,'valor':'asignar'})
@@ -65,9 +65,10 @@ def completa_asignaciones_detalle(request, id):
         return render(request, 'error.html', {'titulo':'Error','error': 'El ticket no ha sido asignado.'})
     if request.method == 'POST':
         try:
-            ticket.asignado_a = request.asigando_a
-            ticket.id_nivel = request.id_nivel
+            ticket.asignado_a = ticket.cleaned_data['asigando_a']
+            ticket.id_nivel = ticket.cleaned_data['id_nivel']
             ticket.fecha_asignacion = timezone.now()
+
             ticket.save()
             return redirect('Asignaciones Page')
         except IntegrityError:

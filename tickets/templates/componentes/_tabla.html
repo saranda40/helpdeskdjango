@@ -1,43 +1,45 @@
-<table class="table table-success table-striped-columns">
+{% load my_filters %}
+
+<table class="table table-success table-striped-co∫lumns">
   <thead>
     <tr>
       {% for header in headers %}
-        <th>{{ header }}</th>
+      <th>{{ header }}</th>
       {% endfor %}
-       {% if valor == 'asignar' or valor == 'revisar' %}
-        <th></th>
-        {% endif%}
+      
+      {% if actions %}
+      <th class="text-center">Acciones</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
     {% for row in data %}
-      <tr>
-        {% for value in row.values %}
-         {% if value == 'Urgente'%}
-          <td class="text-danger">{{ value }}</td>
-         {%else%}
-            <td>{{ value }}</td>
-         {%endif%}
-        {% endfor %}
-        {% if valor == 'asignar' %}
-            <td>
-            <a href="{% url 'Detalle Asignacion Page' row.id %}" class="btn btn-primary">
-                <i class="ti ti-device-ipad-horizontal"></i>
-            </a>
-            </td>
-              </td>
-            
-        {% endif%}
-         {% if valor == 'revisar' %}
-            <td>
-            <a href="{% url 'Revisión Ticket Page' row.id %}" class="btn btn-primary">
-                <i class="ti ti-file-check"></i>
-            </a>
-            </td>
-              </td>
-            
-        {% endif%}
-      </tr>
+    <tr>
+      {% for key in keys %}
+        {% if row.get_type_value == 'Urgente' and key == 'status' %}
+        <td class="text-danger">{{ row|get_item:key }}</td>
+        {% else %}
+        <td>{{ row|get_item:key }}</td>
+        {% endif %}
+      {% endfor %}
+      
+      {% if actions %}
+      <td>
+        <div class="d-flex justify-content-center gap-2">
+          {% for action in actions %}
+          <a title="{{ action.title }}" href="{% url action.url_name row.id %}" class="{{ action.class|default:'btn btn-light' }}">
+            <i class="{{ action.icon_class }}"></i>
+          </a>
+          {% endfor %}
+        </div>
+      </td>
+      {% endif %}
+    </tr>
     {% endfor %}
   </tbody>
 </table>
+{% if data|length == 0 %}
+<div class="alert alert-info text-center" role="alert">
+  No hay datos disponibles.
+</div>
+{% endif %}

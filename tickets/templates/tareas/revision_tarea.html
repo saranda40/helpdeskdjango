@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container mt-3">
+    <div class="row">
+        <div class="col-md-6 offset-md-4 mt-3">
+            <form action="{% url 'Tarea Completa Page' ticket.id %}" method="POST" class="card card-body">
+                {% csrf_token %}
+                {% if error %}
+                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+                {% endif %}
+                {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+                {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
+               
+                {{ form.as_p }}
+                <div class="d-flex justify-content-between">
+                    {% include "componentes/boton.html" with texto="Cerrar Tarea" clase="btn-primary m-auto" %}
+                    
+                </div>
+                
+            </form>
+            <a class="text-center text-secondary mt-3" href="{% url 'Tareas Page' %}">Volver a Tareas</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

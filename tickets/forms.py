@@ -129,3 +129,41 @@ class AsignarForm(ModelForm):
                 'required': 'Debe seleccionar un usuario para asignar el ticket.',
             }
         }
+
+class RevisaTicketForm(ModelForm):
+    # Definimos los campos de relación explícitamente.
+    # No necesitan un queryset porque solo vamos a mostrar sus valores.
+    id_nivel_nombre = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'disabled': True}),
+        label='Nivel'
+    )
+    id_area_nombre = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'disabled': True}),
+        label='Área'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        instance = kwargs.get('instance')
+        
+        if instance:
+            self.fields['id_nivel_nombre'].initial = instance.id_nivel.nombre
+            self.fields['id_area_nombre'].initial = instance.id_area.nombre
+
+    class Meta:
+        model = Ticket
+        # Los campos de Meta deben ser campos directos del modelo.
+        fields = ['titulo', 'descripcion']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'readonly': True}),
+        }
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+        }
+        error_messages = {
+            'titulo': {'max_length': 'El título no puede exceder los 100 caracteres.'},
+            'descripcion': {'required': 'La descripción es opcional, pero si se proporciona, debe ser breve.'},
+        }
