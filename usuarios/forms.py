@@ -183,3 +183,17 @@ class EditFormUser(forms.ModelForm):
                 user.save()
             return user
 
+class BuscarUsuarioForm(forms.Form):
+    username = forms.CharField(
+        label='Usuario, apodo o nombre',
+        max_length=50,
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de Usuario, apodo o nombre'})
+    )
+    area = forms.ModelChoiceField(
+        queryset=areas.objects.all(),
+        required=False,
+        label='Área'
+    )
+
+    

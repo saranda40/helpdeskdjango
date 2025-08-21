@@ -1,15 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class="container mt-5">
-    <div class="row">
-        <div class="col-md-12 offset-md-12 mt-3">
-              {% if error %}
-                {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
-              {% endif %}
-              {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
-              {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
-              {% include 'componentes/_tabla.html' with headers=headers data=data %}
-        </div>
+  <div class="row">
+    <div class="col-md-12 offset-md-12 mt-3">
+      {% if error %}
+      {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+      {% endif %}
+      {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
+      {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
+      <form method="get" class="mb-4">
+          {% csrf_token %}
+          {{ form.as_p }}
+          {% include "componentes/boton.html" with texto="Buscar" clase="btn-primary"  %}
+      </form>
+      {% include 'componentes/_tabla.html' with headers=headers data=data %}
     </div>
+    <nav aria-label="Paginación de tickets">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1">Primera</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+        </li>
+        {% endif %}
+
+        <li class="page-item active" aria-current="page">
+          <span class="page-link">{{ page_obj.number }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
 </main>
 {% endblock %}

@@ -7,7 +7,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('administrador/usuarios',views_admin.usuarios_list, name='Usuarios Page'),
+    path('administrador/usuarios',views_admin.listar_usuarios, name='Usuarios Page'),
     path('administrador/usuarios/<int:id_usuario>/', views_admin.editar_usuario, name='Editar Usuario Page'),
     path('administrador/usuarios/eliminar/<int:id_usuario>/', views_admin.eliminar_usuario, name='Eliminar Usuario Page'),
     path('', views_sitio.home, name='Home Page'),
