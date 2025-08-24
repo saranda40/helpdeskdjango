@@ -10,6 +10,7 @@ urlpatterns = [
     path('administrador/usuarios',views_admin.listar_usuarios, name='Usuarios Page'),
     path('administrador/usuarios/<int:id_usuario>/', views_admin.editar_usuario, name='Editar Usuario Page'),
     path('administrador/usuarios/eliminar/<int:id_usuario>/', views_admin.eliminar_usuario, name='Eliminar Usuario Page'),
+    path('administrador/usuarios/activar/<int:id_usuario>/', views_admin.activar_usuario, name='Activar Usuario Page'),
     path('', views_sitio.home, name='Home Page'),
     path('usuario/login/', views_usuarios.ingreso, name='Login Page'),
     path('usuario/registro/', views_usuarios.registro, name='Registro Page'),

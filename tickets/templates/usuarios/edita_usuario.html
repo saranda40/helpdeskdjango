@@ -5,7 +5,9 @@
         <div class="col-md-10 offset-md-6">
             <form action="" method="post" class="card card-body" enctype="multipart/form-data">
                 {% csrf_token %}
+                {% if error %}
                 {% include "componentes/error.html" with error=error clase="badge text-bg-danger" %}
+                {% endif %}
                 {% include "componentes/titulo.html" with titulo=titulo clase="text-primary" %}
                 {% include "componentes/subtitulo.html" with message=message clase="text-primary" %}
                {{form.as_p}}

@@ -5,11 +5,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from usuarios.forms import LoginForm, EditFormUser, BuscarUsuarioForm
 from usuarios.models import Usuario
-
 from icecream import ic
 
-
-    
 @login_required
 def editar_usuario(request, id_usuario):
     if not request.user.is_authenticated:
@@ -21,7 +18,7 @@ def editar_usuario(request, id_usuario):
         return HttpResponse('No tienes permiso para editar este usuario.')
     
     if request.method == 'GET':
-        form = EditFormUser(instance=usuario)
+        form = EditFormUser(instance=usuario,user=request.user)
         return render(request, 'usuarios/edita_usuario.html', {
             'Usuario': usuario,
             'form': form,
@@ -29,7 +26,7 @@ def editar_usuario(request, id_usuario):
             'message': 'Datos de usuario: ' + usuario.username
         })
     else:  # request.method == 'POST'
-        form = EditFormUser(request.POST, request.FILES, instance=usuario)
+        form = EditFormUser(request.POST, request.FILES, instance=usuario,user=request.user)
         
         if form.is_valid():
             form.save()
@@ -59,9 +56,30 @@ def eliminar_usuario(request, id_usuario):
     else:
         return render(request, 'usuarios/eliminar_usuario.html', {
             'Usuario': usuario,
-            'titulo': 'Eliminar Usuario',
-            'message': '¿Estás seguro de que quieres eliminar este usuario?'
+            'titulo': 'Desactivar Usuario',
+            'message': '¿Estás seguro de que quieres desactivar a este usuario?'
         })
+
+@login_required
+def activar_usuario(request, id_usuario):   
+    if not request.user.is_authenticated:
+        return render(request, 'login.html', {'message': 'Regístrese', 'form': LoginForm()})
+    
+    usuario = get_object_or_404(Usuario, pk=id_usuario)
+
+    if not request.user.is_administrador: 
+        return render(request, 'error.html', {'titulo':'Error','error': 'No tienes permiso para activar este usuario.'})
+    
+    if request.method == 'POST':
+        usuario.is_active = True
+        usuario.save()
+        return redirect('Usuarios Page')
+    else:
+        return render(request, 'usuarios/activar_usuario.html', {
+            'Usuario': usuario,
+            'titulo': 'Activar Usuario',
+            'message': '¿Estás seguro de que quieres activar a este usuario?'
+        })  
 
 @login_required
 def listar_usuarios(request):
@@ -71,9 +89,8 @@ def listar_usuarios(request):
     if not request.user.is_administrador:
         return render(request, 'error.html', {'message': 'No tienes permiso para acceder a esta página.'})
 
-    
     form = BuscarUsuarioForm(request.GET or None)
-    ic(form)
+    lista_Usuarios = None
 
     headers = ['ID', 'Usuario', 'Nombre Completo', 'Apodo' ,'Área', 'Cargo', 'Activo']
     actions = [
@@ -82,12 +99,21 @@ def listar_usuarios(request):
             'title': 'Editar Usuario',
             'class': 'btn-success',
             'icon_class': 'ti ti-file-check',
+            'type': 'all', 
         },
         {
             'url_name': 'Eliminar Usuario Page',
-            'title': 'Eliminar Usuario',
+            'title': 'Desactivar Usuario',
             'class': 'btn-danger',
             'icon_class': 'ti ti-trash',
+            'type': 'activo', 
+        },
+        {
+            'url_name': 'Activar Usuario Page',
+            'title': 'Activar Usuario ',
+            'class': 'btn-success',
+            'icon_class': 'ti ti-user-check',
+            'type': 'inactivo',  
         },
     ]
     
@@ -95,54 +121,28 @@ def listar_usuarios(request):
         busqueda_texto = form.cleaned_data.get('username')
         area = form.cleaned_data.get('id_area')
 
-
         if busqueda_texto:
             lista_Usuarios = Usuario.objects.filter(Q(first_name__icontains=busqueda_texto) | Q(last_name__icontains=busqueda_texto) | Q(username__icontains=busqueda_texto) | Q(apodo__icontains=busqueda_texto), is_active=True, is_superuser=False)
 
         if area:
             lista_Usuarios = lista_Usuarios.filter(id_area=area)
 
-        
         if not busqueda_texto and not area:
-            lista_Usuarios = Usuario.objects.filter(is_active=True, is_superuser=False).order_by('username')
+            lista_Usuarios = Usuario.objects.filter(is_superuser=False).order_by('username')
         
-
-
         paginator = Paginator(lista_Usuarios, 10)  # Mostrar 10 usuarios por página
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        data = [
-            {
-                'id': usuario.id,
-                'username': usuario.username,
-                'nombre_completo': usuario.get_full_name(),
-                'apodo': usuario.apodo,
-                'area': usuario.id_area.nombre if usuario.id_area else 'N/A',
-                'cargo': usuario.id_cargo.nombre if usuario.id_cargo else 'N/A',
-                'activo': 'Sí' if usuario.is_active else 'No'
-            } for usuario in lista_Usuarios
-        ]
-        
-        return render(request, 'usuarios/usuarios.html', {
-            'titulo': 'Lista de Usuarios',
-            'message': 'Usuarios activos en el sistema',
-            'headers': headers,
-            'data': data,
-            'page_obj': page_obj,
-            'keys': ['id', 'username', 'nombre_completo', 'apodo', 'area', 'cargo', 'activo'],
-            'actions': actions,
-            'form': form
-        })
-    
     else:
         form = BuscarUsuarioForm()
-        lista_Usuarios = Usuario.objects.filter(is_active=True, is_superuser=False).order_by('username')
+        lista_Usuarios = Usuario.objects.filter(is_superuser=False).order_by('username')
         paginator = Paginator(lista_Usuarios, 10)  # Mostrar 10 usuarios por página
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
-        data = [
+    if lista_Usuarios:
+         data = [
             {
                 'id': usuario.id,
                 'username': usuario.username,
@@ -152,9 +152,9 @@ def listar_usuarios(request):
                 'cargo': usuario.id_cargo.nombre if usuario.id_cargo else 'N/A',
                 'activo': 'Sí' if usuario.is_active else 'No'
             } for usuario in lista_Usuarios
-        ]
+         ]
 
-        return render(request, 'usuarios/usuarios.html', {
+         return render(request, 'usuarios/usuarios.html', {
             'titulo': 'Lista de Usuarios',
             'message': 'Usuarios activos en el sistema',
             'headers': headers,
@@ -163,15 +163,8 @@ def listar_usuarios(request):
             'keys': ['id', 'username', 'nombre_completo', 'apodo', 'area', 'cargo', 'activo'],
             'actions': actions,
             'form': form
-        })
+            })
 
-
-
-
-
-    
-
-    
 @login_required
 def usuarios_list(request):
     if not request.user.is_authenticated:

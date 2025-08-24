@@ -12,14 +12,13 @@ class Usuario(AbstractUser):
     id_cargo = models.ForeignKey(cargos, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True, null=True)
     is_admin = models.BooleanField(default=False, null=True)
-    crear_ticket = models.BooleanField(default=False, null=True)
+    crea_ticket = models.BooleanField(default=False, null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
 
     @property
     def es_supervisor(self):
         return bool(self.id_cargo and self.id_cargo.es_supervisor)
-    @property
-    def crear_ticket(self):
-        return bool(self.crear_ticket)
+
     @property
     def is_administrador(self):
         return bool(self.is_admin)

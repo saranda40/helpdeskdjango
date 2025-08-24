@@ -6,7 +6,7 @@
       {% for header in headers %}
       <th>{{ header }}</th>
       {% endfor %}
-      
+
       {% if actions %}
       <th class="text-center">Acciones</th>
       {% endif %}
@@ -16,20 +16,42 @@
     {% for row in data %}
     <tr>
       {% for key in keys %}
-        {% if row.get_type_value == 'Urgente' and key == 'status' %}
-        <td class="text-danger">{{ row|get_item:key }}</td>
-        {% else %}
-        <td>{{ row|get_item:key }}</td>
-        {% endif %}
+      {% with value=row|get_item:key %}
+      {% if key == 'activo' and value == 'No' %}
+      <td class="text-danger">{{ value }}</td>
+      {% else %}
+      <td>{{ value }}</td>
+      {% endif %}
+      {% endwith %}
       {% endfor %}
-      
+
       {% if actions %}
       <td>
         <div class="d-flex justify-content-center gap-2">
           {% for action in actions %}
-          <a title="{{ action.title }}" href="{% url action.url_name row.id %}" class="{{ action.class|default:'btn btn-light' }}">
+          {# Verificamos si la acción es para usuarios inactivos #}
+          {% if action.type == 'inactivo' %}
+          {% if row|get_item:'activo' == 'No' %}
+          <a title="{{ action.title }}" href="{% url action.url_name row.id %}"
+            class="{{ action.class|default:'btn btn-light' }}">
             <i class="{{ action.icon_class }}"></i>
           </a>
+          {% endif %}
+          {# Verificamos si la acción es para usuarios activos o genérica #}
+          {% elif action.type == 'activo' %}
+          {% if row|get_item:'activo' == 'Sí' %}
+          <a title="{{ action.title }}" href="{% url action.url_name row.id %}"
+            class="{{ action.class|default:'btn btn-light' }}">
+            <i class="{{ action.icon_class }}"></i>
+          </a>
+          {% endif %}
+          {% else %}
+          {# Muestra la acción si no tiene un tipo específico #}
+          <a title="{{ action.title }}" href="{% url action.url_name row.id %}"
+            class="{{ action.class|default:'btn btn-light' }}">
+            <i class="{{ action.icon_class }}"></i>
+          </a>
+          {% endif %}
           {% endfor %}
         </div>
       </td>
