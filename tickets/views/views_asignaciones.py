@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db import IntegrityError
 from ..models import Ticket
-from ticketsadmin.models import Empresa, Anuncios
-from usuarios.forms import LoginForm, RegistroForm, EditFormUser
-from usuarios.models import Usuario, cargos
-from ..forms import MensajesTicket,  RespuestaMensajeTicket, TicketForm, AsignarForm
+from usuarios.forms import LoginForm
+from usuarios.models import Usuario
+from ..forms import  AsignarForm, BusquedaAsignacion
 from django.utils import timezone
 from icecream import ic
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 @login_required
 def asignaciones(request):
@@ -20,12 +20,58 @@ def asignaciones(request):
                 return render(request, 'login.html', {'titulo':'Login','message': 'Por favor, inicia sesión para ver tus tareas.', 'form': LoginForm()})
       id_area_usuario = request.user.id_area.id
       asignaciones = Ticket.objects.filter(asignado_a__isnull=True, id_area = id_area_usuario).values('id','titulo','descripcion','id_area__nombre','id_nivel__nombre').order_by('-fecha_creacion')
+      ic(asignaciones)
       headers = ['Ticket','Título','Descripción','Área','Nivel']
+      actions = [
+        {
+            'url_name': 'Detalle Asignacion Page',
+            'title': 'Editar Usuario',
+            'class': 'btn-success',
+            'icon_class': 'ti ti-file-check',
+            'type': 'all', 
+        },
+        {
+            'url_name': 'Tarea Eliminada Page',
+            'title': 'Desactivar Usuario',
+            'class': 'btn-danger',
+            'icon_class': 'ti ti-trash',
+            'type': 'all', 
+        }
+    ]
       if not asignaciones:
              return render(request,'tareas/asignaciones.html',{'titulo':'Asignaciones','message':'No tiene asignaciones de casos por revisar','headers':headers,
                                                                'asignaciones':asignaciones,'valor':'asignar'})
+             
       else:
-             return render(request,'tareas/asignaciones.html',{'titulo':'Asignaciones','message':'Listado asignaciones por revisar','headers':headers,'asignaciones':asignaciones,'valor':'asignar'})
+            
+            data = [
+                {
+                    'id': asignaciones.id,
+                    'titulo': asignaciones.titulo,
+                    'descripcion': asignaciones.descripcion [:50] + '...' if len(asignaciones.descripcion) > 50 else asignaciones.descripcion,
+                    'apodo': asignaciones.apodo,
+                    'area': asignaciones.id_area.nombre if usuario.id_area else 'N/A',
+                    'cargo': asignaciones.id_cargo.nombre if usuario.id_cargo else 'N/A',
+                    'activo': 'Sí' if usuario.is_active else 'No'
+                } for usuario in asignaciones
+            ]
+
+            form = BusquedaAsignacion
+            paginator = Paginator(asignaciones, 10)  # Mostrar 10 usuarios por página
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+
+            return render(request, 'tareas/asignaciones.html', {
+                'titulo': 'Asigaciones',
+                'message': 'Listado asignaciones por revisar',
+                'headers': headers,
+                'data': data,
+                'page_obj': page_obj,
+                'keys': ['id', 'username', 'nombre_completo', 'apodo', 'area', 'cargo', 'activo'],
+                'actions': actions,
+                'form': form
+                })
+            #return render(request,'tareas/asignaciones.html',{'titulo':'Asignaciones','message':'Listado asignaciones por revisar','headers':headers,'asignaciones':asignaciones,'valor':'asignar'})
              
 @login_required
 def asignaciones_detalle(request, id):

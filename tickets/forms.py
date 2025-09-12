@@ -167,3 +167,12 @@ class RevisaTicketForm(ModelForm):
             'titulo': {'max_length': 'El título no puede exceder los 100 caracteres.'},
             'descripcion': {'required': 'La descripción es opcional, pero si se proporciona, debe ser breve.'},
         }
+
+class BusquedaAsignacion(forms.Form):
+    ticket= forms.CharField(
+        label='Numero de Ticket o Título',
+        max_length=50,
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el ID del Ticket o Título'})
+    )
+
