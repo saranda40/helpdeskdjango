@@ -45,20 +45,17 @@
       </a>
     </li>
     {% endif%}
-
-
-
     {% if user.is_authenticated  and user.is_administrador %}
+     <li>
+      <a href="{% url 'Usuarios Page' %}" class="nav-link text-dark">
+        Usuarios
+        <span class="badge bg-primary rounded-pill float-end"><i class="ti ti-users"></i></span>
+      </a>
+    </li>
     <li>
       <a href="{% url 'Logout Page' %}" class="nav-link text-dark">
         Configuración
         <span class="badge bg-success rounded-pill float-end"><i class="ti ti-settings-check"></i></span>
-      </a>
-    </li>
-        <li>
-      <a href="{% url 'Usuarios Page' %}" class="nav-link text-dark">
-        Usuarios
-        <span class="badge bg-primary rounded-pill float-end"><i class="ti ti-users"></i></span>
       </a>
     </li>
     {% endif%}

@@ -14,7 +14,7 @@ from django.http import JsonResponse
 
 @login_required
 def asignar_tarea(request):
-    print(request)
+    ic(request)
 
 @login_required
 def tareas(request):
@@ -60,11 +60,12 @@ def crear_tarea(request):
                 return render(request, 'login.html', {'message': 'Por favor, inicia sesión para crear una tarea.',
                                                'form': LoginForm()})
             # Save the task with the current user
-      
+            ic(form)
             task = form.save(commit=False)
+            task.id_area = 2
             task.user = request.user
             task.save()
-            return render(request, 'tareas/crear_tarea.html', {'message': 'Tarea creada exitosamente!', 'form': LoginForm()})
+            return render(request, 'tareas/crear_tarea.html', {'message': 'Tarea creada exitosamente!', 'form': form})
         else:
             return render(request, 'tareas/crear_tarea.html', {'error': 'Error al crear la tarea!', 'form': form})
  else:
